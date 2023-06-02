@@ -7,7 +7,6 @@ const meta = {
   component: XCheckbox,
   tags: ['autodocs'],
   argTypes: {
-    id: { control: 'text', defaultValue: 'checkbox' },
     value: { control: 'text', defaultValue: 'on' },
     dir: { control: 'radio', options: ['ltr', 'rtl'], defaultValue: 'ltr' },
     checked: { control: 'radio', options: [true, false, 'indeterminate'], defaultValue: false },
@@ -18,7 +17,6 @@ const meta = {
     name: { control: 'text' },
     form: { control: 'text' },
   },
-  args: { id: 'checkbox' },
 } satisfies Meta<typeof XCheckbox>;
 
 export default meta;

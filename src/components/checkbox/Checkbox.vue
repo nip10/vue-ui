@@ -19,10 +19,12 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { computed, useSlots } from 'vue';
 import * as checkbox from '@zag-js/checkbox';
 import { normalizeProps, useMachine } from '@zag-js/vue';
-import { computed, useSlots } from 'vue';
+
 import { useId } from '../../hooks/useId';
+import { cn } from '../../utils/cn';
 
 const props = withDefaults(defineProps<CheckboxProps>(), {
   value: 'on',
@@ -45,25 +47,39 @@ if (!slots.default) {
 <template>
   <label
     v-bind="api.rootProps"
-    class="cursor-pointer inline-flex items-center gap-2 select-none align-top data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
+    :class="
+      cn(
+        'inline-flex cursor-pointer select-none items-center gap-2 align-top data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
+      )
+    "
   >
     <span
-      class="relative focus-within:outline-none focus-within:ring-1 focus-within:ring-offset-2 focus-within:rounded focus-within:ring-slate-300"
+      :class="
+        cn(
+          'relative focus-within:rounded focus-within:outline-none focus-within:ring-1 focus-within:ring-slate-300 focus-within:ring-offset-2'
+        )
+      "
     >
       <input v-bind="api.inputProps" />
       <div
         v-bind="api.controlProps"
-        class="w-5 h-5 rounded border border-slate-400 bg-white"
-        :class="{
-          'before:bg-current before:rounded-[999px] before:contents[\'\'] before:h-[2px] before:left-1/2 before:top-1/2 before:absolute before:w-2 before:-translate-x-1/2 before:-translate-y-1/2':
-            api.isIndeterminate,
-          'border-red-500': invalid,
-        }"
+        :class="
+          cn('border-border h-5 w-5 rounded border bg-white', {
+            'before:bg-current before:rounded-[999px] before:contents[\'\'] before:h-[2px] before:left-1/2 before:top-1/2 before:absolute before:w-2 before:-translate-x-1/2 before:-translate-y-1/2':
+              api.isIndeterminate,
+            'border-destructive': invalid,
+          })
+        "
       >
         <span
           aria-hidden="true"
-          class="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 flex aspect-square justify-center h-4"
+          :class="
+            cn(
+              'absolute left-1/2 top-1/2 flex aspect-square h-4 -translate-x-1/2 -translate-y-1/2 justify-center'
+            )
+          "
         >
+          <!-- <XIcon name="Check" /> -->
           <svg
             v-if="api.isChecked"
             id="checkbox-checked-svg"
@@ -74,7 +90,7 @@ if (!slots.default) {
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="block h-full min-w-full"
+            :class="cn('block h-full min-w-full')"
           >
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
