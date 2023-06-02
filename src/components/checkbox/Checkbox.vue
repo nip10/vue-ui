@@ -45,16 +45,19 @@ if (!slots.default) {
 <template>
   <label
     v-bind="api.rootProps"
-    class="cursor-pointer disabled:cursor-not-allowed inline-flex items-center gap-2 select-none align-top"
+    class="cursor-pointer inline-flex items-center gap-2 select-none align-top data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
   >
-    <span class="relative">
+    <span
+      class="relative focus-within:outline-none focus-within:ring-1 focus-within:ring-offset-2 focus-within:rounded focus-within:ring-slate-300"
+    >
       <input v-bind="api.inputProps" />
       <div
         v-bind="api.controlProps"
-        class="w-5 h-5 rounded border border-slate-500 bg-white"
+        class="w-5 h-5 rounded border border-slate-400 bg-white"
         :class="{
           'before:bg-current before:rounded-[999px] before:contents[\'\'] before:h-[2px] before:left-1/2 before:top-1/2 before:absolute before:w-2 before:-translate-x-1/2 before:-translate-y-1/2':
             api.isIndeterminate,
+          'border-red-500': invalid,
         }"
       >
         <span
