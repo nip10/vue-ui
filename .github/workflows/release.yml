@@ -2,11 +2,24 @@ name: 📦 Release
 
 on:
   workflow_dispatch:
-  push:
+  workflow_run:
+    workflows:
+      - '🚀 Publish'
+    types:
+      - completed
     branches:
       - main
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release target
+        if: ${{ github.ref_name != github.event.repository.default_branch }}
+        run: exit 1
+      - name: Validate sanity target
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
   release:
     permissions:
       contents: write
