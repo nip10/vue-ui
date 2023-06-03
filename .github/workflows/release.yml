@@ -1,124 +1,30 @@
-name: 🚀 Release
+name: 📦 Release
 
 on:
-  workflow_run:
-    workflows:
-      - 'Sanity'
-    types:
-      - completed
-    branches:
-      - main
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Validate release target
-        if: ${{ github.ref_name != github.event.repository.default_branch }}
-        run: exit 1
-      - name: Validate sanity target
-        if: ${{ github.event.workflow_run.conclusion != 'success' }}
-        run: exit 1
-
-  release:
-    needs: check
-    runs-on: ubuntu-latest
-    permissions: write-all
-    #   contents: write
-    #   packages: write
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
-        with:
-          # This makes action fetch all Git history so that Changesets can generate changelogs with the correct commits
-          fetch-depth: 0
-        # with:
-        #   token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          cache: yarn
           node-version: 18
-          # registry-url: 'https://registry.npmjs.org'
-          # registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
-          # scope: '@nip10'
-        # env:
-        #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Creating .npmrc
-      #   run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: 📥 Install dependencies
-        run: yarn install --frozen-lockfile --ignore-scripts
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # Ensure to have this set up under GitHub secrets
+        run: yarn install --frozen-lockfile
 
-        # env:
-        #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build
+      - name: 🏗 Build
         run: yarn build
 
-      - name: ⚙️ Configure Git
-        run: |
-          git config --global user.name "Diogo Cardoso"
-          git config --global user.email "hi@diogocardoso.dev"
-
-      - name: 📦 Check for Changesets
-        # id: changeset_check
-        run: yarn changeset:status:ci
-        # continue-on-error: true
-
-      - name: ⬆️ Update Package Version
-        # if: steps.changeset_check.outcome == 'success'
-        run: yarn changeset:version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: 🚀 Publish
-      #   # if: steps.changeset_check.outcome == 'success'
-      #   uses: changesets/action@v1
-      #   with:
-      #     # version: yarn ci:version
-      #     publish: yarn ci:publish
-      #     # commit: 'chore: update package versions [skip ci]'
-      #     # title: 'Update package versions'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: 📝 Commit Changes
-        run: |
-          git add .
-          git commit -m "chore: Update package versions [skip ci]"
-          git push origin main
-
-      - name: 🏷️ Create Tag
-        run: git push --follow-tags
-
-      - name: 🚀 Publish
-        run: yarn changeset:publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # - name: Send a Slack notification if a publish happens
-      #   if: steps.changesets.outputs.published == 'true'
-      #   # You can do something when a publish happens.
-      #   run: my-slack-bot send-notification --message "A new version of ${GITHUB_REPOSITORY} was published!"
+      - name: 📦 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
