@@ -21,7 +21,6 @@ jobs:
       contents: read
       packages: write
     if: github.ref == 'refs/heads/main' && github.event.workflow_run.conclusion == 'success'
-    needs: sanity
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
