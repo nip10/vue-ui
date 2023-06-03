@@ -27,7 +27,7 @@ jobs:
   release:
     needs: check
     runs-on: ubuntu-latest
-    # permissions:
+    permissions: write-all
     #   contents: write
     #   packages: write
     steps:
@@ -46,16 +46,16 @@ jobs:
         # env:
         #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Creating .npmrc
-        run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Creating .npmrc
+      #   run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup .yarnrc.yml
+      - name: Creating .npmrc
         run: |
-          yarn config set npmAuthToken $NPM_TOKEN
-          yarn config set npmAlwaysAuth true
-          yarn config set registry npm.pkg.github.com
+          cat << EOF > "$HOME/.npmrc"
+            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
+          EOF
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -72,12 +72,12 @@ jobs:
       #     git config --global user.email "hi@diogocardoso.dev"
       - name: 📦 Check for Changesets
         # id: changeset_check
-        run: yarn changeset:status:ci
+        run: npm run changeset:status:ci
         # continue-on-error: true
 
       - name: ⬆️ Update Package Version
         # if: steps.changeset_check.outcome == 'success'
-        run: yarn changeset:version
+        run: npm run changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -87,7 +87,7 @@ jobs:
         # if: steps.changeset_check.outcome == 'success'
         uses: changesets/action@v1
         with:
-          publish: yarn release
+          publish: npm run release
           commit: 'chore: update package versions [skip ci]'
           title: 'chore: update package versions [skip ci]'
         env:

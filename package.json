@@ -27,7 +27,7 @@
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
     "changeset:generate": "changeset generate",
-    "release": "yarn build && yarn changeset:publish"
+    "release": "npm run build && changeset publish"
   },
   "dependencies": {
     "vue": "^3.3.4"
