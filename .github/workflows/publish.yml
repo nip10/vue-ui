@@ -116,7 +116,8 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: 🏷️ Create Tag
-        run: git push --follow-tags
+        run: |
+          git push --tags
       # - name: Send a Slack notification if a publish happens
       #   if: steps.changesets.outputs.published == 'true'
       #   # You can do something when a publish happens.
