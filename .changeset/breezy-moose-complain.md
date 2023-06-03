@@ -1,0 +1,5 @@
+---
+'vue-ui': patch
+---
+
+foo
