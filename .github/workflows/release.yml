@@ -43,19 +43,19 @@ jobs:
 
       - name: 📦 Check for Changesets
         id: changeset_check
-        run: yarn changesets:status
+        run: yarn changeset:status
 
       - name: ⬆️ Update Package Version
         if: steps.changeset_check.outputs.has_changes == 'true'
-        run: yarn changesets:version
+        run: yarn changeset:version
 
       - name: 📦 Generate Changelog
         if: steps.changeset_check.outputs.has_changes == 'true'
-        run: yarn changesets:generate
+        run: yarn changeset:generate
 
       - name: ⬆️ Update Package Version
         if: steps.changeset_check.outputs.has_changes == 'true'
-        run: yarn changesets:publish
+        run: yarn changeset:publish
 
       - name: 📝 Commit Changes
         run: |
