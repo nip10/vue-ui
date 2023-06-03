@@ -1,5 +1,11 @@
 # vue-ui
 
+## 0.0.3
+
+### Patch Changes
+
+- 7385f95: testing
+
 ## 0.0.2
 
 ### Patch Changes
