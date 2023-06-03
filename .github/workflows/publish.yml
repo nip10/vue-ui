@@ -118,6 +118,12 @@ jobs:
       - name: 🏷️ Create Tag
         run: |
           git push --tags
+
+      - name: 📦 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/**/*
       # - name: Send a Slack notification if a publish happens
       #   if: steps.changesets.outputs.published == 'true'
       #   # You can do something when a publish happens.
