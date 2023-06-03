@@ -33,13 +33,14 @@ jobs:
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        # with:
+        #   token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
           # registry-url: 'https://npm.pkg.github.com'
           # Defaults to the user or organization that owns the workflow file
           # scope: '@nip10'
@@ -50,19 +51,17 @@ jobs:
       #   run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      # - name: Creating .npmrc
+      #   run: |
+      #     cat << EOF > "$HOME/.npmrc"
+      #       //npm.pkg.github.com/:_authToken=$NPM_TOKEN
+      #     EOF
+      #   env:
+      #     NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 📥 Install dependencies
         run: yarn install --frozen-lockfile --ignore-scripts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Build
       #   run: yarn build
@@ -72,29 +71,29 @@ jobs:
       #     git config --global user.email "hi@diogocardoso.dev"
       - name: 📦 Check for Changesets
         # id: changeset_check
-        run: npm run changeset:status:ci
+        run: yarn changeset:status:ci
         # continue-on-error: true
 
-      - name: ⬆️ Update Package Version
-        # if: steps.changeset_check.outcome == 'success'
-        run: npm run changeset:version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: ⬆️ Update Package Version
+      #   # if: steps.changeset_check.outcome == 'success'
+      #   run: yarn changeset:version
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     # NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🚀 Publish to GitHub Packages
+      - name: 🚀 Publish
         # if: steps.changeset_check.outcome == 'success'
         uses: changesets/action@v1
         with:
-          publish: npm run release
+          version: yarn ci:version
+          publish: yarn ci:publish
           commit: 'chore: update package versions [skip ci]'
-          title: 'chore: update package versions [skip ci]'
+          title: 'Update package versions'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - name: 📝 Commit Changes
       #   if: steps.changeset_check.outcome == 'success'
       #   run: |
