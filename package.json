@@ -39,7 +39,6 @@
     "changeset:status:ci": "node .scripts/changeset-status.mjs",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "changeset:generate": "changeset generate",
     "ci:publish": "yarn build && changeset publish",
     "ci:version": "changeset version && yarn install --no-lockfile",
     "prepublish": "yarn build"
