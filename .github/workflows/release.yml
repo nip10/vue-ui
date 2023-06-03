@@ -68,9 +68,9 @@ jobs:
           publish: yarn release
           commit: 'chore: update package versions [skip ci]'
           title: 'chore: update package versions [skip ci]'
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: 📝 Commit Changes
       #   if: steps.changeset_check.outcome == 'success'
