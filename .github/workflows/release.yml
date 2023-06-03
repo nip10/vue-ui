@@ -51,29 +51,29 @@ jobs:
         run: yarn changeset:version
 
       - name: 📦 Generate Changelog
-        if: if: steps.changeset_check.outcome == 'success'
+        if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:generate
 
       - name: ⬆️ Update Package Version
-        if: if: steps.changeset_check.outcome == 'success'
+        if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:publish
 
       - name: 📝 Commit Changes
-        if: if: steps.changeset_check.outcome == 'success'
+        if: steps.changeset_check.outcome == 'success'
         run: |
           git add .
           git commit -m "chore: Update package versions [skip ci]"
           git push origin main
 
       - name: 🏷️ Create Tag
-        if: if: steps.changeset_check.outcome == 'success'
+        if: steps.changeset_check.outcome == 'success'
         run: |
           git fetch --tags
           git tag -a v${{ steps.release.outputs.new_version }} -m "Release v${{ steps.release.outputs.new_version }}"
           git push origin v${{ steps.release.outputs.new_version }}
 
       - name: 🚀 Publish to GitHub Packages
-        if: if: steps.changeset_check.outcome == 'success'
+        if: steps.changeset_check.outcome == 'success'
         run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
