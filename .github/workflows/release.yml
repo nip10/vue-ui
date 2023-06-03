@@ -33,13 +33,17 @@ jobs:
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
+        with:
+          # This makes action fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
         # with:
         #   token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          cache: yarn
+          node-version: 18
           registry-url: 'https://registry.npmjs.org'
           # registry-url: 'https://npm.pkg.github.com'
           # Defaults to the user or organization that owns the workflow file
@@ -60,6 +64,9 @@ jobs:
       #     NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 📥 Install dependencies
         run: yarn install --frozen-lockfile --ignore-scripts
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # Ensure to have this set up under GitHub secrets
+
         # env:
         #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -86,14 +93,13 @@ jobs:
         # if: steps.changeset_check.outcome == 'success'
         uses: changesets/action@v1
         with:
-          version: yarn ci:version
+          # version: yarn ci:version
           publish: yarn ci:publish
-          commit: 'chore: update package versions [skip ci]'
-          title: 'Update package versions'
+          # commit: 'chore: update package versions [skip ci]'
+          # title: 'Update package versions'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - name: 📝 Commit Changes
       #   if: steps.changeset_check.outcome == 'success'
       #   run: |
