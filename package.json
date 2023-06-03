@@ -27,7 +27,7 @@
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
     "changeset:generate": "changeset generate",
-    "ci:publish": "changeset publish",
+    "ci:publish": "yarn build && changeset publish",
     "ci:version": "changeset version && yarn install --no-lockfile",
     "prepublish": "yarn build"
   },
