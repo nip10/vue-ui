@@ -41,6 +41,14 @@ jobs:
           git config --global user.name "Diogo Cardoso"
           git config --global user.email "hi@diogocardoso.dev"
 
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 📦 Check for Changesets
         id: changeset_check
         run: yarn changeset:status:ci
@@ -54,6 +62,7 @@ jobs:
         if: steps.changeset_check.outcome == 'success'
         run: |
           git add .
+          git restore --staged .npmrc
           git commit -m "chore: Update package versions [skip ci]"
           git push origin main
 
