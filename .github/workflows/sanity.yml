@@ -1,4 +1,4 @@
-name: S
+name: Sanity
 
 on:
   push:
