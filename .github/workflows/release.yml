@@ -6,6 +6,11 @@ on:
       - main
 
 jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do nothing
+        run: echo "This is a placeholder job with no actual steps"
   release:
     runs-on: ubuntu-latest
     permissions:
