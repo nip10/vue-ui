@@ -3,11 +3,11 @@ name: Compressed Size
 on: [pull_request]
 
 jobs:
-  build:
+  size:
     runs-on: ubuntu-latest
 
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
       - name: 📦 Calculate sizes
-      - uses: preactjs/compressed-size-action@v2
+        uses: preactjs/compressed-size-action@v2
