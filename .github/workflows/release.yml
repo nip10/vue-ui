@@ -1,0 +1,66 @@
+name: 🚀 Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: sanity
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          # scope: '@nip10'
+
+      - name: 📥 Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: ⚙️ Configure Git
+        run: |
+          git config --global user.name "Diogo Cardoso"
+          git config --global user.email "hi@diogocardoso.dev"
+
+      - name: 📦 Check for Changesets
+        id: changeset_check
+        run: npx changesets status
+
+      - name: ⬆️ Update Package Version
+        if: steps.changeset_check.outputs.has_changes == 'true'
+        run: npx changesets version
+
+      - name: 📦 Generate Changelog
+        if: steps.changeset_check.outputs.has_changes == 'true'
+        run: npx changesets generate
+
+      - name: ⬆️ Update Package Version
+        if: steps.changeset_check.outputs.has_changes == 'true'
+        run: npx changesets publish
+
+      - name: 📝 Commit Changes
+        run: |
+          git add .
+          git commit -m "chore: Update package versions [skip ci]"
+          git push origin main
+
+      - name: 🏷️ Create Tag
+        run: |
+          git fetch --tags
+          git tag -a v${{ steps.release.outputs.new_version }} -m "Release v${{ steps.release.outputs.new_version }}"
+          git push origin v${{ steps.release.outputs.new_version }}
+
+      - name: 🚀 Publish to GitHub Packages
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
