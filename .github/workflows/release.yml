@@ -56,10 +56,13 @@ jobs:
       - name: Creating .npmrc
         run: |
           cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=$GITHUB_TOKEN
+            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
           EOF
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check content of .npmrc
+        run: cat $HOME/.npmrc
 
       - name: 🚀 Publish to GitHub Packages
         if: steps.changeset_check.outcome == 'success'
