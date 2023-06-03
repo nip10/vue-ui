@@ -50,10 +50,6 @@ jobs:
         if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:version
 
-      - name: ⬆️ Publish Package Version
-        if: steps.changeset_check.outcome == 'success'
-        run: yarn changeset:publish
-
       - name: 📝 Commit Changes
         if: steps.changeset_check.outcome == 'success'
         run: |
