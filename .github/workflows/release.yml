@@ -43,19 +43,19 @@ jobs:
 
       - name: 📦 Check for Changesets
         id: changeset_check
-        run: npx changesets status
+        run: yarn changesets:status
 
       - name: ⬆️ Update Package Version
         if: steps.changeset_check.outputs.has_changes == 'true'
-        run: npx changesets version
+        run: yarn changesets:version
 
       - name: 📦 Generate Changelog
         if: steps.changeset_check.outputs.has_changes == 'true'
-        run: npx changesets generate
+        run: yarn changesets:generate
 
       - name: ⬆️ Update Package Version
         if: steps.changeset_check.outputs.has_changes == 'true'
-        run: npx changesets publish
+        run: yarn changesets:publish
 
       - name: 📝 Commit Changes
         run: |
