@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    if: github.ref == 'refs/heads/main' && github.event.workflow_run.conclusion == 'success'
+    if: github.event.workflow_run.conclusion == 'success'
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
@@ -50,11 +50,7 @@ jobs:
         if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:version
 
-      - name: 📦 Generate Changelog
-        if: steps.changeset_check.outcome == 'success'
-        run: yarn changeset:generate
-
-      - name: ⬆️ Update Package Version
+      - name: ⬆️ Publish Package Version
         if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:publish
 
