@@ -1,5 +1,11 @@
 # vue-ui
 
+## 0.0.11
+
+### Patch Changes
+
+- [`b61bcad`](https://github.com/nip10/vue-ui/commit/b61bcadeeb1e39fa49540d6afe75cf2b49f58ca5) Thanks [@nip10](https://github.com/nip10)! - poop
+
 ## 0.0.10
 
 ### Patch Changes
