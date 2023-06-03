@@ -2,6 +2,19 @@
   "name": "vue-ui",
   "private": false,
   "version": "0.0.4",
+  "license": "MIT",
+  "author": {
+    "name": "Diogo Cardoso",
+    "email": "hi@diogocardoso.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nip10/vue-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nip10/vue-ui/issues"
+  },
+  "homepage": "https://github.com/nip10/vue-ui#readme",
   "type": "module",
   "main": "dist/vue-ui.umd.js",
   "module": "dist/vue-ui.es.js",
