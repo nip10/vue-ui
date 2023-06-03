@@ -51,10 +51,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Creating .yarnrc
-        run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .yarnrc
+      - name: Setup .yarnrc.yml
+        run: |
+          yarn config set npmAuthToken $NPM_TOKEN
+          yarn config set npmAlwaysAuth true
+          yarn config set registry npm.pkg.github.com
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📥 Install dependencies
         run: yarn install --frozen-lockfile --ignore-scripts
