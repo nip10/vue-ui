@@ -1,5 +1,0 @@
----
-'zesty-ui': patch
----
-
-qweqwe
