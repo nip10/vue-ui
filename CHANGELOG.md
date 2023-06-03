@@ -1,5 +1,11 @@
 # vue-ui
 
+## 0.0.15
+
+### Patch Changes
+
+- [`7690482`](https://github.com/nip10/vue-ui/commit/7690482bbbe92cc478870e24c8b5e9a7d9ae40bc) Thanks [@nip10](https://github.com/nip10)! - ffrss
+
 ## 0.0.14
 
 ### Patch Changes
