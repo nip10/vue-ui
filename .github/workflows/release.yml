@@ -36,18 +36,13 @@ jobs:
       - name: 📥 Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: ⚙️ Configure Git
-        run: |
-          git config --global user.name "Diogo Cardoso"
-          git config --global user.email "hi@diogocardoso.dev"
+      # - name: Build
+      #   run: yarn build
 
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: ⚙️ Configure Git
+      #   run: |
+      #     git config --global user.name "Diogo Cardoso"
+      #     git config --global user.email "hi@diogocardoso.dev"
 
       - name: 📦 Check for Changesets
         id: changeset_check
@@ -58,22 +53,46 @@ jobs:
         if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:version
 
-      - name: 📝 Commit Changes
-        if: steps.changeset_check.outcome == 'success'
+      - name: Creating .npmrc
         run: |
-          git add .
-          git commit -m "chore: Update package versions [skip ci]"
-          git push origin main
-
-      - name: 🏷️ Create Tag
-        if: steps.changeset_check.outcome == 'success'
-        run: |
-          git fetch --tags
-          git tag -a v${{ steps.release.outputs.new_version }} -m "Release v${{ steps.release.outputs.new_version }}"
-          git push origin v${{ steps.release.outputs.new_version }}
+          cat << EOF > "$HOME/.npmrc"
+            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🚀 Publish to GitHub Packages
         if: steps.changeset_check.outcome == 'success'
-        run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: changesets/action@v1
+        with:
+          publish: yarn release
+          commit: 'chore: update package versions [skip ci]'
+          title: 'chore: update package versions [skip ci]'
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: 📝 Commit Changes
+      #   if: steps.changeset_check.outcome == 'success'
+      #   run: |
+      #     git add .
+      #     git commit -m "chore: Update package versions [skip ci]"
+      #     git push origin main
+
+      # - name: 🏷️ Create Tag
+      #   if: steps.changeset_check.outcome == 'success'
+      #   run: |
+      #     git fetch --tags
+      #     git tag -a v${{ steps.release.outputs.new_version }} -m "Release v${{ steps.release.outputs.new_version }}"
+      #     git push origin v${{ steps.release.outputs.new_version }}
+
+      # - name: 🚀 Publish to GitHub Packages
+      #   if: steps.changeset_check.outcome == 'success'
+      #   run: yarn publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Send a Slack notification if a publish happens
+      #   if: steps.changesets.outputs.published == 'true'
+      #   # You can do something when a publish happens.
+      #   run: my-slack-bot send-notification --message "A new version of ${GITHUB_REPOSITORY} was published!"

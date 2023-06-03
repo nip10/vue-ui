@@ -23,10 +23,11 @@
     "test": "vitest",
     "changeset": "changeset",
     "changeset:status": "changeset status",
+    "changeset:status:ci": "node .scripts/changeset-status.mjs",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
     "changeset:generate": "changeset generate",
-    "changeset:status:ci": "node .scripts/changeset-status.mjs"
+    "release": "yarn build && yarn changeset:publish"
   },
   "dependencies": {
     "vue": "^3.3.4"
