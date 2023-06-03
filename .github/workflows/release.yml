@@ -9,18 +9,27 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
-  placeholder:
+  check:
     runs-on: ubuntu-latest
     steps:
-      - name: Do nothing
-        run: echo "This is a placeholder job with no actual steps"
+      - name: Validate release target
+        if: ${{ github.ref_name != github.event.repository.default_branch }}
+        run: exit 1
+      - name: Validate sanity target
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
+
   release:
+    needs: check
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-    if: github.event.workflow_run.conclusion == 'success'
+    # permissions:
+    #   contents: write
+    #   packages: write
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
@@ -31,48 +40,43 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          registry-url: 'https://npm.pkg.github.com'
+          # registry-url: 'https://npm.pkg.github.com'
           # Defaults to the user or organization that owns the workflow file
           # scope: '@nip10'
+        # env:
+        #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Creating .npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📥 Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Build
       #   run: yarn build
-
       # - name: ⚙️ Configure Git
       #   run: |
       #     git config --global user.name "Diogo Cardoso"
       #     git config --global user.email "hi@diogocardoso.dev"
-
       - name: 📦 Check for Changesets
-        id: changeset_check
+        # id: changeset_check
         run: yarn changeset:status:ci
-        continue-on-error: true
+        # continue-on-error: true
 
       - name: ⬆️ Update Package Version
-        if: steps.changeset_check.outcome == 'success'
+        # if: steps.changeset_check.outcome == 'success'
         run: yarn changeset:version
         env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
-          EOF
-        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🚀 Publish to GitHub Packages
-        if: steps.changeset_check.outcome == 'success'
+        # if: steps.changeset_check.outcome == 'success'
         uses: changesets/action@v1
         with:
           publish: yarn release
