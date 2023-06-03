@@ -14,7 +14,7 @@
     "prebuild": "rimraf dist",
     "build": "vite build",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.vue src --fix",
-    "postbuild": "terser dist/vue-ui.es.js -o dist/vue-ui.es.min.js --compress --mangle --comments /@license/i && node scripts/post-build.mjs",
+    "postbuild": "terser dist/vue-ui.es.js -o dist/vue-ui.es.min.js --compress --mangle --comments /@license/i && node .scripts/post-build.mjs",
     "build:analyze": "ANALYZE=true yarn build",
     "typecheck": "vue-tsc --noEmit",
     "preview": "vite preview",
@@ -25,7 +25,8 @@
     "changeset:status": "changeset status",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "changeset:generate": "changeset generate"
+    "changeset:generate": "changeset generate",
+    "changeset:status:ci": "node .scripts/changeset-status.mjs"
   },
   "dependencies": {
     "vue": "^3.3.4"
