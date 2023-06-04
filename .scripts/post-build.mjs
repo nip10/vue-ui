@@ -1,9 +1,9 @@
 import { readFileSync, statSync } from 'fs';
 import path from 'path';
-import { URL } from 'url';
+import { fileURLToPath } from 'url';
 import { gzipSync } from 'zlib';
 
-const __filename = new URL(import.meta.url).pathname;
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const filenames = ['vue-ui.es.js', 'vue-ui.es.min.js', 'vue-ui.umd.js'];
