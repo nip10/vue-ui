@@ -75,10 +75,30 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🚀 Publish
+        id: publish-script
         run: yarn changeset:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Parse Output
+        run: |
+          output="${{ steps.publish-script.outputs.stdout }}"
+          # Process the output here, such as parsing or extracting information
+          echo "Output: $output"
+        continue-on-error: true
+
+      - name: Parse Tag Version
+        id: parse-tag
+        continue-on-error: true
+        run: |
+          output="${{ steps.publish-script.outputs.stdout }}"
+          tag=$(echo "$output" | grep -oP "(?<=New tag:  v)[^\s]+")
+          echo "::set-output name=tag::$tag"
+
+      - name: foo
+        run: git tag --list --column | xargs -I@ sh -c 'git rev-parse --quiet --verify refs/tags/@ || echo @'
+        continue-on-error: true
 
       - name: 📝 Commit Changes
         run: |
