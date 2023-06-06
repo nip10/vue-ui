@@ -8,7 +8,7 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     value: { control: 'text', defaultValue: 'on' },
-    dir: { control: 'radio', options: ['ltr', 'rtl'], defaultValue: 'ltr' },
+    // dir: { control: 'radio', options: ['ltr', 'rtl'], defaultValue: 'ltr' },
     checked: { control: 'radio', options: [true, false, 'indeterminate'], defaultValue: false },
     disabled: { control: 'boolean' },
     invalid: { control: 'boolean' },

@@ -2,14 +2,38 @@
 type CheckedState = boolean | 'indeterminate';
 
 export type CheckboxProps = {
-  dir?: 'ltr' | 'rtl';
+  /**
+   * If `true`, the checkbox will be disabled
+   */
   disabled?: boolean;
+  /**
+   * If `true`, the checkbox is marked as invalid.
+   */
   invalid?: boolean;
+  /**
+   * If `true`, the checkbox input is marked as required,
+   */
   required?: boolean;
+  /**
+   * If `true`, the checkbox will be checked.
+   */
   checked?: CheckedState;
+  /**
+   * The callback invoked when the checked state of the `Checkbox` changes.
+   */
   onChange?: (details: { checked: CheckedState }) => void;
+  /**
+   * The name of the input field in a checkbox. Useful for form submission.
+   */
   name?: string;
+  /**
+   * The id of the form that the checkbox belongs to.
+   */
   form?: string;
+  /**
+   * The value of checkbox input. Useful for form submission.
+   * @default "on"
+   */
   value?: string;
 };
 
@@ -22,6 +46,7 @@ export default {
 import { computed, useSlots } from 'vue';
 import * as checkbox from '@zag-js/checkbox';
 import { normalizeProps, useMachine } from '@zag-js/vue';
+import { Check } from 'lucide-vue-next';
 
 import { useId } from '../../hooks/useId';
 import { cn } from '../../utils/cn';
@@ -79,25 +104,11 @@ if (!slots.default) {
             )
           "
         >
-          <!-- <XIcon name="Check" /> -->
-          <svg
-            v-if="api.isChecked"
-            id="checkbox-checked-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            fill="none"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            :class="cn('block h-full min-w-full')"
-          >
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
+          <Check v-if="api.isChecked" :class="cn('block h-full min-w-full')" />
         </span>
       </div>
     </span>
-    <span v-bind="api.labelProps">
+    <span v-bind="api.labelProps" class="text-primary">
       <slot />
     </span>
   </label>
