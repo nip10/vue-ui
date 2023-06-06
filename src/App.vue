@@ -2,12 +2,14 @@
 import XBadge from './components/badge/Badge.vue';
 import XCheckbox from './components/checkbox/Checkbox.vue';
 import XRadioGroup from './components/radio-group/RadioGroup.vue';
+import XTabs from './components/tabs-ark/Tabs.vue';
 
 export default {
   components: {
     XBadge,
     XCheckbox,
     XRadioGroup,
+    XTabs,
   },
 };
 </script>
@@ -73,6 +75,12 @@ const radio = {
             disabled
             :value="radio.items[0].id"
           />
+        </div>
+      </section>
+      <section class="flex flex-col gap-2">
+        <h2 class="text-xl">Tabs (Ark)</h2>
+        <div class="flex w-fit gap-4">
+          <XTabs />
         </div>
       </section>
     </div>
